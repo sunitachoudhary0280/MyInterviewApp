@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
@@ -17,6 +17,19 @@ export default function RecordingScreen({ question, onComplete }: RecordingScree
   const streamRef = useRef<MediaStream | null>(null)
   const chunksRef = useRef<Blob[]>([])
   const timerRef = useRef<NodeJS.Timeout | null>(null)
+
+  const stopRecording = useCallback(() => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop()
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop())
+      }
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
+      }
+      setIsRecording(false)
+    }
+  }, [isRecording])
 
   const startRecording = useCallback(async () => {
     try {
@@ -45,7 +58,6 @@ export default function RecordingScreen({ question, onComplete }: RecordingScree
       mediaRecorder.start()
       setIsRecording(true)
       
-      // Start 60-second timer
       setTimeLeft(60)
       timerRef.current = setInterval(() => {
         setTimeLeft((prev) => {
@@ -60,8 +72,19 @@ export default function RecordingScreen({ question, onComplete }: RecordingScree
     } catch (err) {
       console.error('Error starting recording:', err)
     }
-  }, [])
+  }, [stopRecording])
 
+  const handleSubmit = useCallback(() => {
+    stopRecording()
+    onComplete()
+  }, [stopRecording, onComplete])
+
+  const handleConfirmNext = useCallback(() => {
+    setShowConfirmDialog(false)
+    onComplete()
+  }, [onComplete])
+
+  // Start recording when component mounts
   useEffect(() => {
     startRecording()
     return () => {
@@ -73,29 +96,6 @@ export default function RecordingScreen({ question, onComplete }: RecordingScree
       }
     }
   }, [startRecording])
-
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop()
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop())
-      }
-      if (timerRef.current) {
-        clearInterval(timerRef.current)
-      }
-      setIsRecording(false)
-    }
-  }
-
-  const handleSubmit = () => {
-    stopRecording()
-    onComplete()
-  }
-
-  const handleConfirmNext = () => {
-    setShowConfirmDialog(false)
-    onComplete()
-  }
 
   return (
     <Card className="p-6 space-y-4">
