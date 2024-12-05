@@ -22,7 +22,6 @@ const INTERVIEW_QUESTIONS = [
 
 export default function Home() {
   const [currentScreen, setCurrentScreen] = useState('instructions')
-  const [permissions, setPermissions] = useState({ audio: false, video: false, screen: false })
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [isRecording, setIsRecording] = useState(false)
 
@@ -55,7 +54,7 @@ export default function Home() {
       <Card className="w-full max-w-4xl p-8 bg-white dark:bg-gray-800 rounded-lg shadow-2xl">
         {currentScreen === 'instructions' && <InstructionScreen onNext={nextScreen} />}
         {currentScreen === 'checkPermissions' && (
-          <CheckPermissionScreen onNext={nextScreen} setPermissions={setPermissions} />
+          <CheckPermissionScreen onNext={nextScreen} setPermissions={() => {}} />
         )}
         {currentScreen === 'interview' && (
           <>
