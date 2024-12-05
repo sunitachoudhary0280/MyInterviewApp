@@ -1,7 +1,12 @@
 import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 
-export default function CheckPermissionScreen({ onNext, setPermissions }: { onNext: () => void, setPermissions: (permissions: any) => void }) {
+interface CheckPermissionScreenProps {
+  onNext: () => void
+  setPermissions: (permissions: { audio: boolean; video: boolean; screen: boolean }) => void
+}
+
+export default function CheckPermissionScreen({ onNext, setPermissions }: CheckPermissionScreenProps) {
   const [audioPermission, setAudioPermission] = useState(false)
   const [videoPermission, setVideoPermission] = useState(false)
   const [screenPermission, setScreenPermission] = useState(false)
