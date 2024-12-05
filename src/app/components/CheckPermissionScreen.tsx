@@ -6,6 +6,11 @@ interface CheckPermissionScreenProps {
   setPermissions: (permissions: { audio: boolean; video: boolean; screen: boolean }) => void
 }
 
+interface MediaError {
+  name: string;
+  message: string;
+}
+
 export default function CheckPermissionScreen({ onNext, setPermissions }: CheckPermissionScreenProps) {
   const [audioPermission, setAudioPermission] = useState(false)
   const [videoPermission, setVideoPermission] = useState(false)
@@ -18,7 +23,8 @@ export default function CheckPermissionScreen({ onNext, setPermissions }: CheckP
       setAudioPermission(true)
       setVideoPermission(true)
     } catch (err) {
-      console.error("Error accessing media devices.", err)
+      const error = err as MediaError;
+      console.error("Error accessing media devices.", error)
     }
   }
 
@@ -30,14 +36,15 @@ export default function CheckPermissionScreen({ onNext, setPermissions }: CheckP
     }
     try {
       const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-      stream.getTracks().forEach(track => track.stop()); // Stop the stream immediately after getting permission
+      stream.getTracks().forEach(track => track.stop());
       setScreenPermission(true);
       setScreenError("");
     } catch (err) {
-      console.error("Error accessing screen sharing.", err);
-      if (err.name === "NotAllowedError") {
+      const error = err as MediaError;
+      console.error("Error accessing screen sharing.", error);
+      if (error.name === "NotAllowedError") {
         setScreenError("Screen sharing permission was denied. Please try again.");
-      } else if (err.name === "NotReadableError") {
+      } else if (error.name === "NotReadableError") {
         setScreenError("Unable to access your screen. Please check your display settings and try again.");
       } else {
         setScreenError("An error occurred while trying to access screen sharing. Please ensure you're using a supported browser and try again.");
