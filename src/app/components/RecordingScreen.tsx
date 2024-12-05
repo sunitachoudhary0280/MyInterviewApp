@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
@@ -18,19 +18,7 @@ export default function RecordingScreen({ question, onComplete }: RecordingScree
   const chunksRef = useRef<Blob[]>([])
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
-  useEffect(() => {
-    startRecording()
-    return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop())
-      }
-      if (timerRef.current) {
-        clearInterval(timerRef.current)
-      }
-    }
-  }, [])
-
-  const startRecording = async () => {
+  const startRecording = useCallback(async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       streamRef.current = stream
@@ -72,7 +60,19 @@ export default function RecordingScreen({ question, onComplete }: RecordingScree
     } catch (err) {
       console.error('Error starting recording:', err)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    startRecording()
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop())
+      }
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
+      }
+    }
+  }, [startRecording])
 
   const stopRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
@@ -121,13 +121,15 @@ export default function RecordingScreen({ question, onComplete }: RecordingScree
       <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Time's Up!</DialogTitle>
+            <DialogTitle>Time&apos;s Up!</DialogTitle>
             <DialogDescription>
               Your recording time has ended. Would you like to submit this answer and move to the next question?
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-             
+            <Button variant="outline" onClick={() => setShowConfirmDialog(false)}>
+              Review Answer
+            </Button>
             <Button onClick={handleConfirmNext}>
               Submit and Continue
             </Button>
