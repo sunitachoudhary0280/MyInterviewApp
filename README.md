@@ -25,24 +25,21 @@ Test Completion Feedback: Provides clear completion status.
 
 Demo
 Live Demo Link
- 
+[http://my-interview-lmhcwvgyd-sunitas-projects-17476e1c.vercel.app]
 
 Technologies Used
 Frontend Framework: Next.js
 UI Frameworks: ShadCN UI, TailwindCSS
 Programming Language: TypeScript
-Media APIs:
-navigator.mediaDevices.getUserMedia() for audio/video.
-navigator.mediaDevices.getDisplayMedia() for screen sharing.
+Media APIs:navigator.mediaDevices.getUserMedia() for audio/video.
+           navigator.mediaDevices.getDisplayMedia() for screen sharing.
+           
 Setup and Installation
 Follow these steps to set up the project locally:
-
 Clone the Repository
 git clone https://github.com/sunitachoudhary0280/myinterviewapp.git
-
 Navigate to the Project Directory
 cd myinterviewapp
-
 Install Dependencies
 npm install
 Run the Development Server
@@ -51,6 +48,7 @@ Open the application in your browser at http://localhost:3000.
 
 Usage
 Visit the application link.
+
 Follow these steps:
 Instruction Screen: Familiarize yourself with the test requirements.
 Permission Check: Allow access to audio, video, and screen sharing.
