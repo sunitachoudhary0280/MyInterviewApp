@@ -13,7 +13,7 @@ export default function InstructionScreen({ onNext }: { onNext: () => void }) {
       </ul>
       <div className="flex justify-center">
         <Button onClick={onNext} className="bg-purple-600 hover:bg-purple-700 text-white">
-          I'm Ready
+          I&apos;m Ready
         </Button>
       </div>
     </div>
